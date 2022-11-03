@@ -2,7 +2,10 @@
   "name": "typeorm-relations",
   "version": "0.0.1",
   "description": "Tools for working with TypeORM relations.",
-  "keywords": ["typeorm", "relations"],
+  "keywords": [
+    "typeorm",
+    "relations"
+  ],
   "author": "Equalogic Ltd",
   "license": "MIT",
   "publishConfig": {

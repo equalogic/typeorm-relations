@@ -38,16 +38,14 @@ describe('RelationMap', () => {
     });
 
     it('correctly merges complex nested relation objects', () => {
-      const relationMap = new RelationMap<any>(
-        {
-          foo: {
-            bar: {
-              baz: true,
-            },
-            xyzzy: true,
+      const relationMap = new RelationMap<any>({
+        foo: {
+          bar: {
+            baz: true,
           },
+          xyzzy: true,
         },
-      );
+      });
       relationMap.add({
         foo: {
           bar: true,
@@ -70,26 +68,22 @@ describe('RelationMap', () => {
     });
 
     it('correctly merges another RelationMap', () => {
-      const relationMapA = new RelationMap<any>(
-        {
-          foo: {
-            bar: {
-              baz: true,
-            },
-            xyzzy: true,
+      const relationMapA = new RelationMap<any>({
+        foo: {
+          bar: {
+            baz: true,
+          },
+          xyzzy: true,
+        },
+      });
+      const relationMapB = new RelationMap<any>({
+        foo: {
+          bar: true,
+          xyzzy: {
+            zyxxy: true,
           },
         },
-      );
-      const relationMapB = new RelationMap<any>(
-        {
-          foo: {
-            bar: true,
-            xyzzy: {
-              zyxxy: true,
-            },
-          },
-        }
-      );
+      });
 
       relationMapA.add(relationMapB);
 
