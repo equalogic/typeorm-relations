@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/equalogic/typeorm-relations/raw/master/resources/logo@720w.png" width="720" height="420">
+  <img src="https://github.com/equalogic/typeorm-relations/raw/master/resources/logo@720w.png" width="720" height="400">
   <br>
   <br>
   <a href="https://npmjs.com/package/typeorm-relations">
