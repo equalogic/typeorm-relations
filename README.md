@@ -65,7 +65,9 @@ import { RelationMap } from 'typeorm-relations';
 const userRelationMap = new RelationMap<User>({
   profile: true,
   photos: true,
-  videos: true,
+  videos: {
+    videoComments: true,
+  },
 });
 
 if (needsVideoAttributes) {
@@ -84,6 +86,7 @@ const users = await userRepository.find({
    *   profile: true,
    *   photos: true,
    *   videos: {
+   *     videoComments: true,
    *     videoAttributes: true,
    *   },
    * }
@@ -104,7 +107,10 @@ new RelationMap<User>({ profile: true });
 
 #### `RelationMap.add(source: FindOptionsRelations | RelationMap | string | string[])`
 
-Mutates the `RelationMap` instance by adding relations. Accepts several kinds of input:
+Mutates the `RelationMap` instance by adding relations. It's smart about merging relation objects, so that a `true`
+value for a relation property will not clobber an existing object value containing nested relations.
+
+Accepts several kinds of input:
 
 1.  Add a relations object, or another `RelationMap` instance, to merge the values.
 
@@ -119,6 +125,7 @@ Mutates the `RelationMap` instance by adding relations. Accepts several kinds of
       photos: {
         photoAttributes: true,
       },
+      videos: true,
     });
 
     relationMapA.add({
