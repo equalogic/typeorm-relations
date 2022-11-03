@@ -1,0 +1,30 @@
+# Build files
+dist/
+
+# Include some configs
+!*.config.js
+!.eslintrc.js
+
+# Ignore test results
+test/.results/
+test/.coverage/
+*.sqlite
+
+# Node modules
+node_modules
+
+# Temporary files
+tmp
+
+# When npm runs error it write logs to the below file
+npm-debug.log
+
+# ESLint cache file
+.eslintcache
+
+# IDE
+.idea
+.vscode
+
+# Operating System files
+.DS_Store

@@ -1,0 +1,46 @@
+name: Publish
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
+jobs:
+  #
+  # npm job
+  #
+  npm:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js and NPM
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          always-auth: true
+          registry-url: https://registry.npmjs.org
+      # Dependencies
+      - name: Install dependencies with NPM
+        run: npm ci
+      # Build
+      - name: Build application
+        run: npm run build
+        env:
+          CI: true
+      - name: Check build worked correctly
+        run: |
+          if [ ! -f ./dist/index.js ]; then
+            echo "Something went wrong: no ./dist/index.js file was built!"
+            exit 1
+          else
+            echo "Build appears to be successful: ./dist/index.js was created"
+          fi
+      # Publish
+      - name: Copy extra files into dist directory
+        run: cp package.json README* dist/
+      - name: Publish release to NPM registry
+        run: npm publish dist/
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
