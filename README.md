@@ -214,6 +214,57 @@ If you are using a `SelectQueryBuilder`, you can join the relations using `setFi
 queryBuilder.setFindOptions({ relations: relationMap.toFindOptionsRelations() });
 ```
 
+### Utility functions
+
+If you prefer a more functional style, you can use these utilities directly instead of using the `RelationMap` class.
+
+#### `mergeRelations(relationsA: FindOptionsRelations, relationsB: FindOptionsRelations): FindOptionsRelations`
+
+Returns a new relations object containing the result of merging the two relations objects passed as arguments.
+
+Example:
+
+```ts
+import { mergeRelations } from 'typeorm-relations';
+
+mergeRelations<User>({ profile: true }, { photos: { photoAttributes: true } });
+```
+
+Returns the value:
+
+```
+{
+  profile: true,
+  photos: {
+    photoAttributes: true
+  }
+}
+```
+
+#### `addRelationByPath(relations: FindOptionsRelations, path: string[]): FindOptionsRelations`
+
+Returns a new relations object containing the result of adding a relation property by key path, specified as an array
+of strings.
+
+Example:
+
+```ts
+import { addRelationByPath } from 'typeorm-relations';
+
+addRelationByPath<User>({ profile: true }, ['photos', 'photoAttributes']);
+```
+
+Returns the value:
+
+```
+{
+  profile: true,
+  photos: {
+    photoAttributes: true
+  }
+}
+```
+
 ## License
 
 MIT
