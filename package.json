@@ -37,7 +37,7 @@
     "lodash.mergewith": "4.6.2"
   },
   "devDependencies": {
-    "@types/jest": "29.2.2",
+    "@types/jest": "29.2.3",
     "@types/lodash.mergewith": "4.6.7",
     "@types/node": "18.11.9",
     "@typescript-eslint/eslint-plugin": "5.43.0",
