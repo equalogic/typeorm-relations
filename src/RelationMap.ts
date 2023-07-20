@@ -1,4 +1,5 @@
 import { FindOptionsRelations } from 'typeorm';
+import { FindOptionsRelationsProperty } from 'typeorm/find-options/FindOptionsRelations';
 import { addRelationByPath, isKeyOf, mergeRelations } from './util';
 
 export class RelationMap<Entity extends InstanceType<any> = any> {
@@ -30,5 +31,29 @@ export class RelationMap<Entity extends InstanceType<any> = any> {
         );
 
     return this;
+  }
+
+  public has(path: keyof Entity | string[]): boolean {
+    if (!Array.isArray(path)) {
+      path = [String(path)];
+    }
+
+    let found: boolean = true;
+
+    path.reduce(
+      (current: FindOptionsRelations<Entity> | FindOptionsRelationsProperty<any> | null, property: string) => {
+        const entry: FindOptionsRelationsProperty<any> | null =
+          current != null && typeof current === 'object' && property in current ? current[property] : null;
+
+        if (entry == null || entry === false) {
+          found = false;
+        }
+
+        return entry;
+      },
+      this.value,
+    );
+
+    return found;
   }
 }
