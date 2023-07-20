@@ -99,4 +99,34 @@ describe('RelationMap', () => {
       });
     });
   });
+
+  describe('has()', () => {
+    it('correctly finds selected paths', () => {
+      const relationMap = new RelationMap<any>({
+        foo: {
+          bar: {
+            baz: true,
+          },
+        },
+      });
+
+      expect(relationMap.has('foo')).toEqual(true);
+      expect(relationMap.has(['foo', 'bar'])).toEqual(true);
+      expect(relationMap.has(['foo', 'bar', 'baz'])).toEqual(true);
+    });
+
+    it("doesn't find unselected paths", () => {
+      const relationMap = new RelationMap<any>({
+        foo: {
+          bar: {
+            baz: true,
+          },
+        },
+      });
+
+      expect(relationMap.has('bar')).toEqual(false);
+      expect(relationMap.has(['baz', 'bar', 'foo'])).toEqual(false);
+      expect(relationMap.has(['foo', 'xyzzy'])).toEqual(false);
+    });
+  });
 });
