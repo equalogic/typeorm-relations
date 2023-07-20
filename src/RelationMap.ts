@@ -2,7 +2,7 @@ import { FindOptionsRelations } from 'typeorm';
 import { FindOptionsRelationsProperty } from 'typeorm/find-options/FindOptionsRelations';
 import { addRelationByPath, isKeyOf, mergeRelations } from './util';
 
-export class RelationMap<Entity extends InstanceType<any> = any> {
+export class RelationMap<Entity extends Record<string, any> = Record<string, any>> {
   private value: FindOptionsRelations<Entity>;
 
   public constructor(relations: FindOptionsRelations<Entity> = {}) {
