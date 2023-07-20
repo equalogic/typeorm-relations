@@ -105,7 +105,7 @@ Instantiate with `new RelationMap()`. Pass a relations object to the constructor
 new RelationMap<User>({ profile: true });
 ```
 
-#### `RelationMap.add(source: FindOptionsRelations | RelationMap | string | string[])`
+#### `RelationMap.add(source: FindOptionsRelations | RelationMap | string | string[]): this`
 
 Mutates the `RelationMap` instance by adding relations. It's smart about merging relation objects, so that a `true`
 value for a relation property will not clobber an existing object value containing nested relations.
@@ -193,7 +193,7 @@ Accepts several kinds of input:
     }
     ```
 
-#### `RelationMap.toFindOptionsRelations()`
+#### `RelationMap.toFindOptionsRelations(): FindOptionsRelations`
 
 Returns a plain object representation of the relations, suitable for use with any of TypeORM's repository methods that
 accept [`find` options](https://typeorm.io/find-options).
@@ -212,6 +212,31 @@ If you are using a `SelectQueryBuilder`, you can join the relations using `setFi
 
 ```ts
 queryBuilder.setFindOptions({ relations: relationMap.toFindOptionsRelations() });
+```
+
+#### `RelationMap.has(path: string | string[]): boolean`
+
+Accepts a relation path as a string or an array of strings and returns a boolean indicating whether the relation at that
+path is selected for retrieval in the `RelationMap`. If a single string is given as the path, it should refer to a top
+level key of the entity, whereas an array path may look into deeper levels of relations.
+
+Example:
+
+```ts
+const relationMap = new RelationMap<User>({
+  photos: {
+    photoAttributes: true,
+  },
+  videos: true,
+});
+
+if (relationMap.has('photos') && relationMap.has('videos')) {
+  console.log('User.photos and User.videos will be selected!');
+}
+
+if (relationMap.has(['photos', 'photoAttributes'])) {
+  console.log('User.photos.photoAttributes will be selected!');
+}
 ```
 
 ### Utility functions
