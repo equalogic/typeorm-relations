@@ -1,4 +1,4 @@
-import { addRelationByPath, mergeRelations, removeRelationByPath } from './util';
+import { addRelationByPath, mergeRelations, removeRelationByPath, subtractRelations } from './util';
 
 describe('util', () => {
   describe('addRelationByPath', () => {
@@ -82,6 +82,68 @@ describe('util', () => {
           xyzzy: {
             zyxxy: true,
           },
+        },
+      });
+    });
+  });
+
+  describe('subtractRelations', () => {
+    it('correctly subtracts simple boolean relations', () => {
+      const relations = subtractRelations<any>({ foo: true, bar: true }, { bar: true });
+
+      expect(relations).toEqual({
+        foo: true,
+      });
+    });
+
+    it('correctly subtracts complex nested relations at leaf level', () => {
+      const relations = subtractRelations<any>(
+        {
+          foo: {
+            bar: {
+              baz: true,
+            },
+            xyzzy: true,
+          },
+        },
+        {
+          foo: {
+            bar: {
+              baz: true,
+            },
+          },
+        },
+      );
+
+      expect(relations).toEqual({
+        foo: {
+          bar: true,
+          xyzzy: true,
+        },
+      });
+    });
+
+    it('correctly subtracts complex nested relations from mid-level', () => {
+      const relations = subtractRelations<any>(
+        {
+          foo: {
+            bar: {
+              baz: true,
+              boz: true,
+            },
+            xyzzy: true,
+          },
+        },
+        {
+          foo: {
+            bar: true,
+          },
+        },
+      );
+
+      expect(relations).toEqual({
+        foo: {
+          xyzzy: true,
         },
       });
     });

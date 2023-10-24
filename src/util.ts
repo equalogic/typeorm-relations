@@ -89,6 +89,33 @@ export function mergeRelations<Entity>(
   return result;
 }
 
+export function subtractRelations<Entity>(
+  relations: FindOptionsRelations<Entity>,
+  relationsToSubtract: FindOptionsRelations<Entity>,
+): FindOptionsRelations<Entity> {
+  return Object.keys(relations).reduce((result, key) => {
+    if (relationsToSubtract[key] == null) {
+      result[key] = relations[key];
+
+      return result;
+    }
+
+    if (typeof relations[key] === 'object' && typeof relationsToSubtract[key] === 'object') {
+      const subtracted = subtractRelations(relations[key], relationsToSubtract[key]);
+
+      if (Object.keys(subtracted).length > 0) {
+        result[key] = subtracted;
+      } else {
+        result[key] = true;
+      }
+
+      return result;
+    }
+
+    return result;
+  }, {} as FindOptionsRelations<Entity>);
+}
+
 export function isKeyOf<Target extends Record<string, any>>(key: unknown, target?: Target): key is keyof Target {
   return typeof key === 'string' && (target == null || key in target);
 }
