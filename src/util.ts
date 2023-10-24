@@ -27,6 +27,32 @@ export function addRelationByPath<Entity>(
   return result;
 }
 
+export function removeRelationByPath<Entity>(
+  relations: FindOptionsRelations<Entity>,
+  path: string[],
+): FindOptionsRelations<Entity> {
+  const [property, nextProperty] = path;
+
+  if (property == null) {
+    return relations;
+  }
+
+  const result = { ...relations };
+
+  if (nextProperty != null) {
+    const nextResult = removeRelationByPath(result[property], path.slice(1));
+
+    return {
+      ...result,
+      [property]: Object.keys(nextResult).length > 0 ? nextResult : true,
+    };
+  } else {
+    delete result[property];
+  }
+
+  return result;
+}
+
 export function mergeRelations<Entity>(
   relationsA: FindOptionsRelations<Entity>,
   relationsB: FindOptionsRelations<Entity>,
@@ -61,6 +87,33 @@ export function mergeRelations<Entity>(
   );
 
   return result;
+}
+
+export function subtractRelations<Entity>(
+  relations: FindOptionsRelations<Entity>,
+  relationsToSubtract: FindOptionsRelations<Entity>,
+): FindOptionsRelations<Entity> {
+  return Object.keys(relations).reduce((result, key) => {
+    if (relationsToSubtract[key] == null) {
+      result[key] = relations[key];
+
+      return result;
+    }
+
+    if (typeof relations[key] === 'object' && typeof relationsToSubtract[key] === 'object') {
+      const subtracted = subtractRelations(relations[key], relationsToSubtract[key]);
+
+      if (Object.keys(subtracted).length > 0) {
+        result[key] = subtracted;
+      } else {
+        result[key] = true;
+      }
+
+      return result;
+    }
+
+    return result;
+  }, {} as FindOptionsRelations<Entity>);
 }
 
 export function isKeyOf<Target extends Record<string, any>>(key: unknown, target?: Target): key is keyof Target {
