@@ -27,6 +27,32 @@ export function addRelationByPath<Entity>(
   return result;
 }
 
+export function removeRelationByPath<Entity>(
+  relations: FindOptionsRelations<Entity>,
+  path: string[],
+): FindOptionsRelations<Entity> {
+  const [property, nextProperty] = path;
+
+  if (property == null) {
+    return relations;
+  }
+
+  const result = { ...relations };
+
+  if (nextProperty != null) {
+    const nextResult = removeRelationByPath(result[property], path.slice(1));
+
+    return {
+      ...result,
+      [property]: Object.keys(nextResult).length > 0 ? nextResult : true,
+    };
+  } else {
+    delete result[property];
+  }
+
+  return result;
+}
+
 export function mergeRelations<Entity>(
   relationsA: FindOptionsRelations<Entity>,
   relationsB: FindOptionsRelations<Entity>,

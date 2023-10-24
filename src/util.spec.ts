@@ -1,4 +1,4 @@
-import { addRelationByPath, mergeRelations } from './util';
+import { addRelationByPath, mergeRelations, removeRelationByPath } from './util';
 
 describe('util', () => {
   describe('addRelationByPath', () => {
@@ -21,6 +21,25 @@ describe('util', () => {
             baz: true,
           },
         },
+      });
+    });
+  });
+
+  describe('removeRelationByPath', () => {
+    it('correctly removes a single-level relation', () => {
+      const relations = removeRelationByPath({ foo: true, bar: true }, ['foo']);
+
+      expect(relations).toEqual({
+        bar: true,
+      });
+    });
+
+    it('correctly removes multi-level relation', () => {
+      const relations = removeRelationByPath({ xyzzy: true, foo: { bar: { baz: true } } }, ['foo', 'bar']);
+
+      expect(relations).toEqual({
+        xyzzy: true,
+        foo: true,
       });
     });
   });
