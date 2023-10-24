@@ -105,7 +105,7 @@ Instantiate with `new RelationMap()`. Pass a relations object to the constructor
 new RelationMap<User>({ profile: true });
 ```
 
-#### `RelationMap.add(source: FindOptionsRelations | RelationMap | string | string[]): this`
+#### `RelationMap.add(relationsToAdd: FindOptionsRelations | RelationMap | string | string[]): this`
 
 Mutates the `RelationMap` instance by adding relations. It's smart about merging relation objects, so that a `true`
 value for a relation property will not clobber an existing object value containing nested relations.
@@ -193,6 +193,46 @@ Accepts several kinds of input:
     }
     ```
 
+#### `RelationMap.remove(relationsToRemove: FindOptionsRelations | RelationMap | string | string[]): this`
+
+Mutates the `RelationMap` instance by subtracting relations. Removing a nested path will remove all relations below the
+given level.
+
+Accepts input in the form of a relations object, another `RelationMap` instance, or a single relation given by key name
+or key path array.
+
+Example:
+
+```ts
+const relations = new RelationMap<User>({
+  profile: true,
+  photos: {
+    photoAttributes: true,
+  },
+  videos: {
+    videoAttributes: true,
+  },
+});
+
+relations.remove({
+  videos: {
+    videoAttributes: true,
+  },
+});
+```
+
+Results in `relations` containing the value:
+
+```
+{
+  profile: true,
+  photos: {
+    photoAttributes: true
+  },
+  videos: true,
+}
+```
+
 #### `RelationMap.toFindOptionsRelations(): FindOptionsRelations`
 
 Returns a plain object representation of the relations, suitable for use with any of TypeORM's repository methods that
@@ -266,6 +306,35 @@ Returns the value:
 }
 ```
 
+#### `subtractRelations(relations: FindOptionsRelations, relationsToSubtract: FindOptionsRelations): FindOptionsRelations`
+
+Returns a new relations object containing the result of subtracting the second relation object from the first.
+
+Example:
+
+```ts
+import { subtractRelations } from 'typeorm-relations';
+
+subtractRelations<User>(
+  {
+    profile: true,
+    photos: { photoAttributes: true },
+  },
+  {
+    photos: { photoAttributes: true },
+  },
+);
+```
+
+Returns the value:
+
+```
+{
+  profile: true,
+  photos: true
+}
+```
+
 #### `addRelationByPath(relations: FindOptionsRelations, path: string[]): FindOptionsRelations`
 
 Returns a new relations object containing the result of adding a relation property by key path, specified as an array
@@ -287,6 +356,28 @@ Returns the value:
   photos: {
     photoAttributes: true
   }
+}
+```
+
+#### `removeRelationByPath(relations: FindOptionsRelations, path: string[]): FindOptionsRelations`
+
+Returns a new relations object containing the result of removing a relation property by key path, specified as an array
+of strings.
+
+Example:
+
+```ts
+import { removeRelationByPath } from 'typeorm-relations';
+
+removeRelationByPath<User>({ profile: true, photos: { photoAttributes: true } }, ['photos', 'photoAttributes']);
+```
+
+Returns the value:
+
+```
+{
+  profile: true,
+  photos: true
 }
 ```
 
