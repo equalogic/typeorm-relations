@@ -98,6 +98,37 @@ describe('RelationMap', () => {
         },
       });
     });
+
+    it('correctly merges a nested RelationMap', () => {
+      const rootRelationMap = new RelationMap<any>({
+        foo: {
+          bar: {
+            baz: true,
+          },
+          xyzzy: true,
+        },
+      });
+      const xyzzyRelationMap = new RelationMap<any>({
+        zyxxy: true,
+      });
+
+      rootRelationMap.add({
+        foo: {
+          xyzzy: xyzzyRelationMap,
+        },
+      });
+
+      expect(rootRelationMap.valueOf()).toEqual({
+        foo: {
+          bar: {
+            baz: true,
+          },
+          xyzzy: {
+            zyxxy: true,
+          },
+        },
+      });
+    });
   });
 
   describe('remove()', () => {
@@ -189,6 +220,37 @@ describe('RelationMap', () => {
 
       expect(relationMapA.valueOf()).toEqual({
         foo: {
+          xyzzy: true,
+        },
+      });
+    });
+
+    it('correctly subtracts a nested RelationMap', () => {
+      const rootRelationMap = new RelationMap<any>({
+        foo: {
+          bar: {
+            baz: true,
+          },
+          xyzzy: {
+            zyxxy: true,
+          },
+        },
+      });
+      const xyzzyRelationMap = new RelationMap<any>({
+        zyxxy: true,
+      });
+
+      rootRelationMap.remove({
+        foo: {
+          xyzzy: xyzzyRelationMap,
+        },
+      });
+
+      expect(rootRelationMap.valueOf()).toEqual({
+        foo: {
+          bar: {
+            baz: true,
+          },
           xyzzy: true,
         },
       });
