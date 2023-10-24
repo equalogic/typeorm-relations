@@ -1,6 +1,6 @@
 import { FindOptionsRelations } from 'typeorm';
 import { FindOptionsRelationsProperty } from 'typeorm/find-options/FindOptionsRelations';
-import { addRelationByPath, isKeyOf, mergeRelations } from './util';
+import { addRelationByPath, isKeyOf, mergeRelations, removeRelationByPath, subtractRelations } from './util';
 
 export class RelationMap<Entity extends Record<string, any> = Record<string, any>> {
   private value: FindOptionsRelations<Entity>;
@@ -17,17 +17,33 @@ export class RelationMap<Entity extends Record<string, any> = Record<string, any
     return this.value;
   }
 
-  public add(source: RelationMap<Entity> | FindOptionsRelations<Entity> | keyof Entity | string[]): this {
-    this.value = Array.isArray(source)
-      ? addRelationByPath(this.value, source)
+  public add(relationsToAdd: RelationMap<Entity> | FindOptionsRelations<Entity> | keyof Entity | string[]): this {
+    this.value = Array.isArray(relationsToAdd)
+      ? addRelationByPath(this.value, relationsToAdd)
       : mergeRelations(
           this.value,
-          source instanceof RelationMap
-            ? source.valueOf()
-            : isKeyOf<Entity>(source)
+          relationsToAdd instanceof RelationMap
+            ? relationsToAdd.valueOf()
+            : isKeyOf<Entity>(relationsToAdd)
             ? // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-              ({ [source]: true } as FindOptionsRelations<Entity>)
-            : source,
+              ({ [relationsToAdd]: true } as FindOptionsRelations<Entity>)
+            : relationsToAdd,
+        );
+
+    return this;
+  }
+
+  public remove(relationsToRemove: RelationMap<Entity> | FindOptionsRelations<Entity> | keyof Entity | string[]): this {
+    this.value = Array.isArray(relationsToRemove)
+      ? removeRelationByPath(this.value, relationsToRemove)
+      : subtractRelations(
+          this.value,
+          relationsToRemove instanceof RelationMap
+            ? relationsToRemove.valueOf()
+            : isKeyOf<Entity>(relationsToRemove)
+            ? // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+              ({ [relationsToRemove]: true } as FindOptionsRelations<Entity>)
+            : relationsToRemove,
         );
 
     return this;
