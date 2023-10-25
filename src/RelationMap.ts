@@ -4,6 +4,8 @@ import { addRelationByPath, isKeyOf, mergeRelations, removeRelationByPath, subtr
 export type RelationMapInput<Entity extends Record<string, any>> = {
   [P in keyof Entity]?: P extends 'toString'
     ? unknown
+    : Entity[P] extends Array<any>
+    ? FindOptionsRelationsProperty<NonNullable<Entity[P][number]>> | RelationMap<Entity[P][number]>
     : FindOptionsRelationsProperty<NonNullable<Entity[P]>> | RelationMap<Entity[P]>;
 };
 
