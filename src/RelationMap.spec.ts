@@ -1,3 +1,4 @@
+import { FindOptionsRelations } from 'typeorm';
 import { RelationMap } from './RelationMap';
 
 enum TestAbcEnum {
@@ -29,6 +30,14 @@ type TestEntity = {
 
 describe('RelationMap', () => {
   describe('constructor', () => {
+    it('accepts a plain relations object as input', () => {
+      const relations = new RelationMap<TestEntity>({ foo: true } as FindOptionsRelations<TestEntity>);
+
+      expect(relations.valueOf()).toEqual({
+        foo: true,
+      });
+    });
+
     it('accepts another RelationMap as input', () => {
       const relations = new RelationMap<TestEntity>(new RelationMap<TestEntity>({ foo: true }));
 
