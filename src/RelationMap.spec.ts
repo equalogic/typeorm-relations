@@ -1,6 +1,24 @@
 import { RelationMap } from './RelationMap';
 
 describe('RelationMap', () => {
+  describe('constructor', () => {
+    it('works with array (ManyToMany) properties on an entity class', () => {
+      type Entity = {
+        foo: { id: string };
+        bars: { id: string }[];
+      };
+
+      const relationsA = new RelationMap<Entity>({ foo: true });
+      const relationsB = new RelationMap<Entity>({ bars: true });
+      relationsA.add(relationsB);
+
+      expect(relationsA.valueOf()).toEqual({
+        foo: true,
+        bars: true,
+      });
+    });
+  });
+
   describe('add()', () => {
     it('correctly adds a relation by top level key', () => {
       const relationMap = new RelationMap<any>({ foo: true, bar: true });
