@@ -41,11 +41,11 @@ export class RelationMap<Entity extends Record<string, any> = Record<string, any
   }
 
   public valueOf(): FindOptionsRelations<Entity> {
-    return this.value;
+    return { ...this.value };
   }
 
   public toFindOptionsRelations(): FindOptionsRelations<Entity> {
-    return this.value;
+    return this.valueOf();
   }
 
   public add(relationsToAdd: RelationMap<Entity> | RelationMapInput<Entity> | keyof Entity | string[]): this {
