@@ -2,18 +2,47 @@ import { RelationMap } from './RelationMap';
 
 describe('RelationMap', () => {
   describe('constructor', () => {
-    it('works with array (ManyToMany) properties on an entity class', () => {
-      type Entity = {
-        foo: { id: string };
-        bars: { id: string }[];
+    it('works with complex entity classes', () => {
+      enum TestAbcEnum {
+        a = 'a',
+        b = 'b',
+        c = 'c',
+      }
+
+      type TestQuxEntity = {
+        id: string;
+        bar: TestBarEntity;
+        abcs: TestAbcEnum[];
       };
 
-      const relationsA = new RelationMap<Entity>({ foo: true });
-      const relationsB = new RelationMap<Entity>({ bars: true });
+      type TestFooEntity = {
+        id: string;
+        quxs: TestQuxEntity[];
+      };
+
+      type TestBarEntity = {
+        id: string;
+      };
+
+      type TestEntity = {
+        foo: TestFooEntity;
+        bars: TestBarEntity[];
+        abcs: TestAbcEnum[];
+      };
+
+      const relationsA = new RelationMap<TestEntity>({ foo: true });
+      const relationsB = new RelationMap<TestEntity>({ bars: true });
       relationsA.add(relationsB);
 
+      const quxRelations = new RelationMap<TestQuxEntity>({ bar: true });
+      relationsA.add({ foo: { quxs: quxRelations } });
+
       expect(relationsA.valueOf()).toEqual({
-        foo: true,
+        foo: {
+          quxs: {
+            bar: true,
+          },
+        },
         bars: true,
       });
     });
