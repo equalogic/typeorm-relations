@@ -36,8 +36,8 @@ function normalizeRelationMapInput<Entity extends Record<string, any>>(
 export class RelationMap<Entity extends Record<string, any> = Record<string, any>> {
   private value: FindOptionsRelations<Entity>;
 
-  public constructor(relations: FindOptionsRelations<Entity> = {}) {
-    this.value = relations;
+  public constructor(relations: RelationMap<Entity> | RelationMapInput<Entity> = {}) {
+    this.value = relations instanceof RelationMap ? relations.valueOf() : normalizeRelationMapInput(relations);
   }
 
   public valueOf(): FindOptionsRelations<Entity> {

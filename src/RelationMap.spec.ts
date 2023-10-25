@@ -1,35 +1,55 @@
 import { RelationMap } from './RelationMap';
 
+enum TestAbcEnum {
+  a = 'a',
+  b = 'b',
+  c = 'c',
+}
+
+type TestQuxEntity = {
+  id: string;
+  bar: TestBarEntity;
+  abcs: TestAbcEnum[];
+};
+
+type TestFooEntity = {
+  id: string;
+  quxs: TestQuxEntity[];
+};
+
+type TestBarEntity = {
+  id: string;
+};
+
+type TestEntity = {
+  foo: TestFooEntity;
+  bars: TestBarEntity[];
+  abcs: TestAbcEnum[];
+};
+
 describe('RelationMap', () => {
   describe('constructor', () => {
+    it('accepts another RelationMap as input', () => {
+      const relations = new RelationMap<TestEntity>(new RelationMap<TestEntity>({ foo: true }));
+
+      expect(relations.valueOf()).toEqual({
+        foo: true,
+      });
+    });
+
+    it('accepts a nested RelationMap as input', () => {
+      const relations = new RelationMap<TestEntity>({
+        foo: new RelationMap<TestFooEntity>({ quxs: true }),
+      });
+
+      expect(relations.valueOf()).toEqual({
+        foo: {
+          quxs: true,
+        },
+      });
+    });
+
     it('works with complex entity classes', () => {
-      enum TestAbcEnum {
-        a = 'a',
-        b = 'b',
-        c = 'c',
-      }
-
-      type TestQuxEntity = {
-        id: string;
-        bar: TestBarEntity;
-        abcs: TestAbcEnum[];
-      };
-
-      type TestFooEntity = {
-        id: string;
-        quxs: TestQuxEntity[];
-      };
-
-      type TestBarEntity = {
-        id: string;
-      };
-
-      type TestEntity = {
-        foo: TestFooEntity;
-        bars: TestBarEntity[];
-        abcs: TestAbcEnum[];
-      };
-
       const relationsA = new RelationMap<TestEntity>({ foo: true });
       const relationsB = new RelationMap<TestEntity>({ bars: true });
       relationsA.add(relationsB);
