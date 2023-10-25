@@ -36,16 +36,16 @@ function normalizeRelationMapInput<Entity extends Record<string, any>>(
 export class RelationMap<Entity extends Record<string, any> = Record<string, any>> {
   private value: FindOptionsRelations<Entity>;
 
-  public constructor(relations: FindOptionsRelations<Entity> = {}) {
-    this.value = relations;
+  public constructor(relations: RelationMap<Entity> | RelationMapInput<Entity> = {}) {
+    this.value = relations instanceof RelationMap ? relations.valueOf() : normalizeRelationMapInput(relations);
   }
 
   public valueOf(): FindOptionsRelations<Entity> {
-    return this.value;
+    return { ...this.value };
   }
 
   public toFindOptionsRelations(): FindOptionsRelations<Entity> {
-    return this.value;
+    return this.valueOf();
   }
 
   public add(relationsToAdd: RelationMap<Entity> | RelationMapInput<Entity> | keyof Entity | string[]): this {

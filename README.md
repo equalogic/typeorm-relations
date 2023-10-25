@@ -97,7 +97,7 @@ const users = await userRepository.find({
 
 ### RelationMap
 
-#### `RelationMap.constructor(initial?: FindOptionsRelations)`
+#### `RelationMap.constructor(initial?: FindOptionsRelations | RelationMap)`
 
 Instantiate with `new RelationMap()`. Pass a relations object to the constructor to set the initial value.
 
