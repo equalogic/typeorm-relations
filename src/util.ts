@@ -94,14 +94,19 @@ export function subtractRelations<Entity>(
   relationsToSubtract: FindOptionsRelations<Entity>,
 ): FindOptionsRelations<Entity> {
   return Object.keys(relations).reduce((result, key) => {
+    // When the relation is not in relationsToSubtract, keep it as is
     if (relationsToSubtract[key] == null) {
       result[key] = relations[key];
 
       return result;
     }
 
-    if (typeof relations[key] === 'object' && typeof relationsToSubtract[key] === 'object') {
-      const subtracted = subtractRelations(relations[key], relationsToSubtract[key]);
+    // When the relation to subtract is an object, recurse into it
+    if (typeof relationsToSubtract[key] === 'object') {
+      const subtracted = subtractRelations(
+        typeof relations[key] === 'boolean' ? {} : relations[key],
+        relationsToSubtract[key],
+      );
 
       if (Object.keys(subtracted).length > 0) {
         result[key] = subtracted;
@@ -112,6 +117,7 @@ export function subtractRelations<Entity>(
       return result;
     }
 
+    // Otherwise continue without including the relation in the result
     return result;
   }, {} as FindOptionsRelations<Entity>);
 }

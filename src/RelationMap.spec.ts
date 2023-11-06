@@ -272,6 +272,22 @@ describe('RelationMap', () => {
       });
     });
 
+    it('correctly subtracts unmapped sub-relations, retaining higher level relations', () => {
+      const relationMap = new RelationMap<any>({
+        foo: true,
+      });
+      relationMap.remove({
+        foo: {
+          bar: true,
+          baz: true,
+        },
+      });
+
+      expect(relationMap.valueOf()).toEqual({
+        foo: true,
+      });
+    });
+
     it('correctly subtracts another RelationMap', () => {
       const relationMapA = new RelationMap<any>({
         foo: {
