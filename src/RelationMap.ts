@@ -5,10 +5,10 @@ export type RelationMapInput<Entity extends Record<string, any>> = {
   [P in keyof Entity]?: P extends 'toString'
     ? unknown
     : Entity[P] extends Array<any>
-    ? RelationMap<NonNullable<Entity[P][number]>> | RelationMapInput<NonNullable<Entity[P][number]>> | boolean
-    : Entity[P] extends object
-    ? RelationMap<Entity[P]> | RelationMapInput<Entity[P]> | boolean
-    : FindOptionsRelationsProperty<NonNullable<Entity[P]>>;
+      ? RelationMap<NonNullable<Entity[P][number]>> | RelationMapInput<NonNullable<Entity[P][number]>> | boolean
+      : Entity[P] extends object
+        ? RelationMap<Entity[P]> | RelationMapInput<Entity[P]> | boolean
+        : FindOptionsRelationsProperty<NonNullable<Entity[P]>>;
 };
 
 function normalizeRelationMapInput<Entity extends Record<string, any>>(
