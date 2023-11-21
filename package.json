@@ -39,7 +39,7 @@
   "devDependencies": {
     "@types/jest": "29.5.8",
     "@types/lodash.mergewith": "4.6.9",
-    "@types/node": "20.9.1",
+    "@types/node": "20.9.2",
     "@typescript-eslint/eslint-plugin": "6.11.0",
     "@typescript-eslint/parser": "6.11.0",
     "barrelsby": "2.8.1",
